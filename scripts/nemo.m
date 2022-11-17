@@ -1,9 +1,12 @@
 %nemo - Master script of the thesis research of Bart Roest, and calls the desired ones.
 %
-% Set OPT switches to run certain scripts (or not).
+% Set OPT switches below to run certain scripts (or not).
 %
 % nemo_help contains an overview of all siblings.
-% These scriipts use Open Earth Tools.
+%
+% These scripts use Open Earth Tools. https://svn.oss.deltares.nl/repos/openearthtools/trunk/matlab/
+%
+% Zandmotor data is stored here: https://repos.deltares.nl/repos/zandmotor/trunk
 %
 % See also: nemo, nemo_help, jarkus
 %
@@ -32,13 +35,33 @@
 % Index: Alongshore indices
 % OPT:   Options or switches
 %
-%-------------------------------------------------------------------------
-%
-% L.W.M. Roest, TUDelft, 2016-2017,2019,2020
-% l.w.m.roest@tudelft.nl
-% 
 
-% Version <http://svnbook.red-bean.com/en/1.5/svn.advanced.props.special.keywords.html>
+%% Copyright notice
+%   --------------------------------------------------------------------
+%   Copyright (C) 2016-2021 TU Delft
+%       Bart Roest
+%
+%       l.w.m.roest@tudelft.nl
+%
+%       Stevinweg 1
+%       2628CN Delft
+%
+%   This library is free software: you can redistribute it and/or modify
+%   it under the terms of the GNU General Public License as published by
+%   the Free Software Foundation, either version 3 of the License, or
+%   (at your option) any later version.
+%
+%   This library is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%   GNU General Public License for more details.
+%
+%   You should have received a copy of the GNU General Public License
+%   along with this library.  If not, see <http://www.gnu.org/licenses/>.
+%   --------------------------------------------------------------------
+
+%% Version <http://svnbook.red-bean.com/en/1.5/svn.advanced.props.special.keywords.html>
+
 % $Id: $
 % $Date: $
 % $Author: $
@@ -49,10 +72,10 @@
 %% OPT
 % Here options are defines which are used in the child scripts.
 % Save options
-OPT.basepath=     'D:\Users\Bart\zandmotor\morphology\JETSKI\raw\'; %Path to raw data.
-OPT.vbbasepath=   'D:\Users\Bart\openearthrawdata\tudelft\vlugtenburg\'; %Path to Vlugtenburg raw data.
-OPT.jrawbasepath= 'D:\Users\Bart\zandmotor\morphology\jarkus\'; %Path to raw jarkus data.
-OPT.outputfolder= ['D:\Users\Bart\Documents\Civiel\CIE5060-09 Thesis\Zandmotor_Nemo\r',datestr(now,'yyyymmdd'),'\']; %Path to output folder for structs and netCDF's.
+OPT.basepath=     fullfile(getenv('userprofile'),'\zandmotor\morphology\JETSKI\raw\'); %Path to raw data.
+OPT.vbbasepath=   fullfile(getenv('userprofile'),'\openearthrawdata\tudelft\vlugtenburg\'); %Path to Vlugtenburg raw data.
+OPT.jrawbasepath= fullfile(getenv('userprofile'),'\zandmotor\morphology\jarkus\'); %Path to raw jarkus data.
+OPT.outputfolder= [pwd,'\output\r',datestr(now,'yyyymmdd'),'\']; %Path to output folder for structs and netCDF's.
 OPT.surveylines=  1; %rebuild surveylines/transect defintions.
 OPT.raw2trans=    1; %redo interpolation from raw data.
 OPT.vb=           1; %include data from 'Vlugtenburg'.
@@ -147,9 +170,8 @@ if OPT.b_jark
     try
         fprintf(1,'Retreiving Jarkus transect.nc from OpenDAP sever... \n');
         DL=nemo_jarkus('http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc',9,S.dist);
-        %DL=nemo_jarkus('D:\Users\Bart\openearthrawdata\rijkswaterstaat\jarkus\transect.nc',9,D.dist);
     catch
-        %TOOO: Replace by belco_subset!
+        
         DL=nemo_jarkus('D:\Users\Bart\Documents\Civiel\CIE5060-09 Thesis\Zandmotor_Nemo\jarkus\transect_r20190731.nc',9,S.dist);
     end
     save([OPT.outputfolder,'jarkus_delfland.mat'],'-struct','DL');
